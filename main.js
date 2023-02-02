@@ -15,12 +15,30 @@ if (1) {
   console.log("Add sample prices for a year");
   const now = Date.now();
   const records = [];
-  for (let i = 0; i < 24; i++) {
+  for (let i = 0; i < 365 * 24; i++) {
     records.push(
       new Point("price")
         .timestamp(now + i * 60 * 60 * 1000)
+        .tag("exchange", "binance")
+        .tag("currency", "BTC")
         .floatField("priceUSD", Math.random() * 600000)
         .floatField("priceRial", 25000 + Math.random() * 10000)
+    );
+  }
+  writer.writePoints(records);
+}
+
+if (1) {
+  console.log("Add sample assets for a year");
+  const now = Date.now();
+  const records = [];
+  for (let i = 0; i < 365 * 24; i++) {
+    records.push(
+      new Point("assets")
+        .tag("user", "ebi")
+        .tag("currency", "BTC")
+        .timestamp(now + i * 60 * 60 * 1000)
+        .floatField("amount", Math.random() * 10)
     );
   }
   writer.writePoints(records);
