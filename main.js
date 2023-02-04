@@ -112,6 +112,8 @@ const userWealthQuery =
     |> map(fn: (r) => ({r with amountUSD: r["priceUSD"] * r["amount"]}))\
   ';
 
+// await Promise.all(Array.from(new Array(250), () => execQuery(userWealthQuery)));
+
 console.dir(await execQuery(userWealthQuery));
 
 console.timeEnd(timeToCalculateUserWealth);
