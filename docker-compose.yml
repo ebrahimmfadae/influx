@@ -1,0 +1,25 @@
+services:
+  influxdb:
+    image: influxdb:2.6
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=superadmin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=superadmin
+      - DOCKER_INFLUXDB_INIT_ORG=myOrg
+      - DOCKER_INFLUXDB_INIT_BUCKET=myBucket
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=secret
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+    ports:
+      - 8086:8086
+  app:
+    image: node:18.13
+    command: node main.js
+    working_dir: $PWD
+    depends_on:
+      - influxdb
+    volumes:
+      - ./:$PWD
+    restart: "no"
+volumes:
+  influxdb-data: {}

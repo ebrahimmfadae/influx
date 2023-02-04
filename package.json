@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "docker compose run app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
