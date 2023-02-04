@@ -92,11 +92,15 @@ if (countPrices * countAssets == 0) {
   console.log("Finished adding samples");
 }
 
+const timeToCalculateUserWealth = "Time to calculate user wealth";
+
+console.time(timeToCalculateUserWealth);
+
 const userWealthQuery =
   '\
     from(bucket: "myBucket")\
     |> range(start: -0s, stop: 1y)\
-    |> aggregateWindow(every: 1m, fn: last, createEmpty: false)\
+    |> aggregateWindow(every: 1d, fn: last, createEmpty: false)\
     |> keep(columns: ["_time", "_field", "_value", "amount", "priceRial", "priceUSD"])\
     |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")\
     |> group()\
@@ -109,3 +113,5 @@ const userWealthQuery =
   ';
 
 console.dir(await execQuery(userWealthQuery));
+
+console.timeEnd(timeToCalculateUserWealth);
