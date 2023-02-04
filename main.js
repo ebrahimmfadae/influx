@@ -26,12 +26,12 @@ async function execQuery(query) {
 }
 
 async function count(measurement) {
-  const query = `\
-  from(bucket: "myBucket")\
-  |> range(start: -0s, stop: 1y)\
-  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\
-  |> count()\
-`;
+  const query = `
+    from(bucket: "myBucket")
+    |> range(start: -0s, stop: 1y)
+    |> filter(fn: (r) => r["_measurement"] == "${measurement}")
+    |> count()
+  `;
   const result = await execQuery(query);
   return result.map((v) => +v._value).reduce((prev, cur) => prev + cur, 0);
 }
@@ -96,21 +96,20 @@ const timeToCalculateUserWealth = "Time to calculate user wealth";
 
 console.time(timeToCalculateUserWealth);
 
-const userWealthQuery =
-  '\
-    from(bucket: "myBucket")\
-    |> range(start: -0s, stop: 1y)\
-    |> aggregateWindow(every: 1d, fn: last, createEmpty: false)\
-    |> keep(columns: ["_time", "_field", "_value", "amount", "priceRial", "priceUSD"])\
-    |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")\
-    |> group()\
-    |> sort(columns: ["_time"])\
-    |> fill(column: "amount", usePrevious: true)\
-    |> fill(column: "priceRial", usePrevious: true)\
-    |> fill(column: "priceUSD", usePrevious: true)\
-    |> map(fn: (r) => ({r with amountRial: r["priceRial"] * r["amount"]}))\
-    |> map(fn: (r) => ({r with amountUSD: r["priceUSD"] * r["amount"]}))\
-  ';
+const userWealthQuery = `
+  from(bucket: "${BUCKET}")
+  |> range(start: -0s, stop: 1y)
+  |> aggregateWindow(every: 1d, fn: last, createEmpty: false)
+  |> keep(columns: ["_time", "_field", "_value", "amount", "priceRial", "priceUSD"])
+  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+  |> group()
+  |> sort(columns: ["_time"])
+  |> fill(column: "amount", usePrevious: true)
+  |> fill(column: "priceRial", usePrevious: true)
+  |> fill(column: "priceUSD", usePrevious: true)
+  |> map(fn: (r) => ({r with amountRial: r["priceRial"] * r["amount"]}))
+  |> map(fn: (r) => ({r with amountUSD: r["priceUSD"] * r["amount"]}))
+`;
 
 // await Promise.all(Array.from(new Array(250), () => execQuery(userWealthQuery)));
 
