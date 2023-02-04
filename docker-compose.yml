@@ -20,6 +20,6 @@ services:
       - influxdb
     volumes:
       - ./:$PWD
-    restart: "no"
+    restart: on-failure
 volumes:
   influxdb-data: {}
